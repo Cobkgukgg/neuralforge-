@@ -37,12 +37,12 @@ You can actually read the code and understand what's happening. Try doing that w
 
 ### Install from PyPI (recommended)
 ```bash
-pip install forgenn
+pip install forgenn-ml
 ```
 
 ### Or install from source
 ```bash
-git clone https://github.com/Cobkgukgg/forgenn.git
+git clone https://github.com/cobkgukgg/forgenn.git
 cd forgenn
 pip install -e .
 ```
