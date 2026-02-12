@@ -7,7 +7,7 @@ Just a basic MNIST-style classifier. Nothing fancy, but it works.
 import numpy as np
 import sys
 sys.path.append('..')
-from neuralforge import Architectures, TrainingConfig
+from forgenn import Architectures, TrainingConfig
 
 def generate_mnist_like_data(n_samples=1000):
     """Generate some fake MNIST-style data for testing"""

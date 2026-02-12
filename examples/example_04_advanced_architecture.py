@@ -6,7 +6,7 @@ Building a custom architecture with all advanced features
 import numpy as np
 import sys
 sys.path.append('..')
-from neuralforge import (
+from forgenn import (
     NeuralNetwork, Dense, ResidualBlock, LayerNormalization,
     TrainingConfig, Activation
 )

@@ -1,5 +1,5 @@
 """
-Benchmarking Script for NeuralForge
+Benchmarking Script for forgenn
 Compare different architectures and configurations
 """
 
@@ -7,7 +7,7 @@ import numpy as np
 import time
 import sys
 sys.path.append('..')
-from neuralforge import Architectures, NeuralNetwork, Dense, ResidualBlock, TrainingConfig
+from forgenn import Architectures, NeuralNetwork, Dense, ResidualBlock, TrainingConfig
 
 class Benchmark:
     """Benchmark different neural network configurations"""

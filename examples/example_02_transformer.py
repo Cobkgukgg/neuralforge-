@@ -5,7 +5,7 @@ Example 2: Sequence Classification with Transformer
 import numpy as np
 import sys
 sys.path.append('..')
-from neuralforge import NeuralNetwork, MultiHeadAttention, LayerNormalization, Dense, TrainingConfig
+from forgenn import NeuralNetwork, MultiHeadAttention, LayerNormalization, Dense, TrainingConfig
 
 def generate_sequence_data(n_samples=1000, seq_len=50, embed_dim=128):
     """Generate synthetic sequence data"""

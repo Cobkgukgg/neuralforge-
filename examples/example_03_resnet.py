@@ -5,7 +5,7 @@ Example 3: ResNet for Deep Learning
 import numpy as np
 import sys
 sys.path.append('..')
-from neuralforge import Architectures, NeuralNetwork, ResidualBlock, Dense, TrainingConfig
+from forgenn import Architectures, NeuralNetwork, ResidualBlock, Dense, TrainingConfig
 
 def generate_regression_data(n_samples=2000, n_features=50):
     """Generate synthetic regression data"""

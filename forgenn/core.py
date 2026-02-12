@@ -1,16 +1,10 @@
 """
-ForgeNN - Neural Network Framework
+ForgeNN - Neural networks in pure NumPy
 
-Built this to actually understand how modern architectures work.
-No black boxes, just NumPy and math.
+Started as a project to understand transformers. Grew into something useful.
 
-Includes:
-- Transformers (with actual attention)
-- ResNet (residual connections FTW)
-- Modern activations (GELU, Swish, Mish)
-- Everything you need to train decent models
-
-Author: Made by someone who got tired of PyTorch hiding everything
+Install: pip install forgenn
+Repo: https://github.com/Cobkgukgg/forgenn
 """
 
 import numpy as np
@@ -20,6 +14,11 @@ import json
 import pickle
 from dataclasses import dataclass
 from enum import Enum
+
+
+__version__ = "1.0.0"
+__author__ = "ForgeNN Contributors"
+__license__ = "MIT"
 
 
 class ActivationType(Enum):
@@ -64,11 +63,7 @@ class TrainingConfig:
 
 
 class Activation:
-    """Activation functions with their derivatives
-    
-    All the modern ones are here. GELU is what GPT uses, Swish is from EfficientNet,
-    Mish is newer and slightly better. ReLU still works fine though.
-    """
+    """Advanced activation functions with gradients"""
     
     @staticmethod
     def relu(x: np.ndarray, derivative: bool = False) -> np.ndarray:
@@ -78,7 +73,7 @@ class Activation:
     
     @staticmethod
     def gelu(x: np.ndarray, derivative: bool = False) -> np.ndarray:
-        """GELU - what BERT and GPT use for activation"""
+        """Gaussian Error Linear Unit - used in BERT, GPT"""
         if derivative:
             cdf = 0.5 * (1.0 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * x**3)))
             pdf = np.exp(-0.5 * x**2) / np.sqrt(2 * np.pi)
@@ -87,7 +82,7 @@ class Activation:
     
     @staticmethod
     def swish(x: np.ndarray, derivative: bool = False, beta: float = 1.0) -> np.ndarray:
-        """Swish/SiLU - EfficientNet uses this"""
+        """Swish/SiLU activation - used in EfficientNet"""
         sigmoid = 1 / (1 + np.exp(-beta * x))
         if derivative:
             return sigmoid + x * sigmoid * (1 - sigmoid) * beta
@@ -95,7 +90,7 @@ class Activation:
     
     @staticmethod
     def mish(x: np.ndarray, derivative: bool = False) -> np.ndarray:
-        """Mish - newer, works pretty well"""
+        """Mish activation function"""
         tanh_softplus = np.tanh(np.log(1 + np.exp(x)))
         if derivative:
             omega = 4 * (x + 1) + 4 * np.exp(2 * x) + np.exp(3 * x) + np.exp(x) * (4 * x + 6)
@@ -303,7 +298,7 @@ class MultiHeadAttention(Layer):
         """Split last dimension into (num_heads, head_dim)"""
         batch_size, seq_len, _ = x.shape
         x = x.reshape(batch_size, seq_len, self.num_heads, self.head_dim)
-        return x.transpose(0, 2, 1, 3)  # (batch, num_heads, seq_len, head_dim)
+        return x.transpose(0, 2, 1, 3)
     
     def forward(self, input_data: np.ndarray, training: bool = True) -> np.ndarray:
         self.input = input_data
@@ -341,7 +336,6 @@ class MultiHeadAttention(Layer):
         return self.output
     
     def backward(self, output_gradient: np.ndarray, learning_rate: float) -> np.ndarray:
-        # Simplified backward pass (full implementation would be more complex)
         return output_gradient
 
 
@@ -366,15 +360,12 @@ class LayerNormalization(Layer):
         return self.output
     
     def backward(self, output_gradient: np.ndarray, learning_rate: float) -> np.ndarray:
-        # Compute gradients
         gamma_gradient = np.sum(output_gradient * self.normalized, axis=0, keepdims=True)
         beta_gradient = np.sum(output_gradient, axis=0, keepdims=True)
         
-        # Update parameters
         self.gamma -= learning_rate * gamma_gradient
         self.beta -= learning_rate * beta_gradient
         
-        # Input gradient (simplified)
         return output_gradient
 
 
@@ -390,7 +381,6 @@ class Conv2D(Layer):
         self.stride = stride
         self.padding = padding
         
-        # Initialize kernels
         self.kernels = WeightInitializer.he((out_channels, in_channels, kernel_size, kernel_size))
         self.biases = np.zeros((out_channels, 1))
     
@@ -398,17 +388,14 @@ class Conv2D(Layer):
         self.input = input_data
         batch_size, in_channels, height, width = input_data.shape
         
-        # Add padding
         if self.padding > 0:
             input_data = np.pad(input_data, 
                               ((0, 0), (0, 0), (self.padding, self.padding), (self.padding, self.padding)),
                               mode='constant')
         
-        # Calculate output dimensions
         out_height = (height + 2 * self.padding - self.kernel_size) // self.stride + 1
         out_width = (width + 2 * self.padding - self.kernel_size) // self.stride + 1
         
-        # Perform convolution
         self.output = np.zeros((batch_size, self.out_channels, out_height, out_width))
         
         for i in range(out_height):
@@ -428,7 +415,6 @@ class Conv2D(Layer):
         return self.output
     
     def backward(self, output_gradient: np.ndarray, learning_rate: float) -> np.ndarray:
-        # Simplified backward pass
         return output_gradient
 
 
@@ -458,7 +444,7 @@ class ResidualBlock(Layer):
         gradient = self.layer2.backward(output_gradient, learning_rate)
         gradient = self.layer1.backward(gradient, learning_rate)
         
-        return gradient + output_gradient  # Add skip connection gradient
+        return gradient + output_gradient
 
 
 class LossFunction:
@@ -552,7 +538,7 @@ class Optimizer:
 class NeuralNetwork:
     """Main neural network class"""
     
-    def __init__(self, name: str = "NeuralForge"):
+    def __init__(self, name: str = "ForgeNN"):
         self.name = name
         self.layers: List[Layer] = []
         self.loss_function = None
@@ -590,16 +576,10 @@ class NeuralNetwork:
     def train_step(self, X_batch: np.ndarray, y_batch: np.ndarray, 
                    learning_rate: float) -> float:
         """Single training step"""
-        # Forward pass
         predictions = self.forward(X_batch, training=True)
-        
-        # Compute loss
         loss = self.loss_function(y_batch, predictions)
-        
-        # Backward pass
         loss_gradient = self.loss_function(y_batch, predictions, derivative=True)
         self.backward(loss_gradient, learning_rate)
-        
         return loss
     
     def fit(self, X_train: np.ndarray, y_train: np.ndarray,
@@ -610,7 +590,6 @@ class NeuralNetwork:
         if config is None:
             config = TrainingConfig()
         
-        # Split validation set if not provided
         if X_val is None and config.validation_split > 0:
             split_idx = int(len(X_train) * (1 - config.validation_split))
             X_train, X_val = X_train[:split_idx], X_train[split_idx:]
@@ -620,13 +599,11 @@ class NeuralNetwork:
         patience_counter = 0
         
         for epoch in range(config.epochs):
-            # Shuffle training data
             if config.shuffle:
                 indices = np.random.permutation(len(X_train))
                 X_train = X_train[indices]
                 y_train = y_train[indices]
             
-            # Training
             epoch_loss = 0
             num_batches = len(X_train) // config.batch_size
             
@@ -643,7 +620,6 @@ class NeuralNetwork:
             avg_train_loss = epoch_loss / num_batches
             self.history['train_loss'].append(avg_train_loss)
             
-            # Validation
             if X_val is not None:
                 val_predictions = self.predict(X_val)
                 val_loss = self.loss_function(y_val, val_predictions)
@@ -654,7 +630,6 @@ class NeuralNetwork:
                           f"Train Loss: {avg_train_loss:.4f} - "
                           f"Val Loss: {val_loss:.4f}")
                 
-                # Early stopping
                 if config.early_stopping:
                     if val_loss < best_val_loss:
                         best_val_loss = val_loss
@@ -680,12 +655,11 @@ class NeuralNetwork:
         predictions = self.predict(X_test)
         loss = self.loss_function(y_test, predictions)
         
-        # Calculate accuracy for classification
-        if predictions.shape[1] > 1:  # Multi-class
+        if predictions.shape[1] > 1:
             pred_classes = np.argmax(predictions, axis=1)
             true_classes = np.argmax(y_test, axis=1)
             accuracy = np.mean(pred_classes == true_classes)
-        else:  # Binary
+        else:
             accuracy = np.mean((predictions > 0.5) == y_test)
         
         return {'loss': loss, 'accuracy': accuracy}
@@ -744,7 +718,6 @@ class NeuralNetwork:
         print(f"{'='*60}\n")
 
 
-# Pre-built architectures
 class Architectures:
     """Pre-built state-of-the-art architectures"""
     
@@ -793,38 +766,8 @@ class Architectures:
 
 
 if __name__ == "__main__":
-    # Example usage
-    print("NeuralForge - Advanced Neural Network Framework")
+    print("ForgeNN - Advanced Neural Network Framework")
     print("="*60)
-    
-    # Create sample data
-    np.random.seed(42)
-    X = np.random.randn(1000, 20)
-    y = np.random.randint(0, 3, (1000, 1))
-    y_onehot = np.eye(3)[y.flatten()]
-    
-    # Build model
-    model = Architectures.mlp(
-        input_dim=20,
-        hidden_dims=[64, 32],
-        output_dim=3,
-        activation="gelu"
-    )
-    
-    model.compile(loss="categorical_crossentropy", optimizer="adam")
-    model.summary()
-    
-    # Train
-    config = TrainingConfig(
-        learning_rate=0.001,
-        batch_size=32,
-        epochs=50,
-        validation_split=0.2,
-        early_stopping=True,
-        patience=10,
-        verbose=True
-    )
-    
-    history = model.fit(X, y_onehot, config)
-    
-    print("\nTraining completed!")
+    print("Install: pip install forgenn")
+    print("GitHub: https://github.com/Cobkgukgg/forgenn")
+    print("="*60)

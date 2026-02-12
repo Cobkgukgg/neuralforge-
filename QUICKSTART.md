@@ -1,10 +1,10 @@
-# Quick Start Guide - NeuralForge
+# Quick Start Guide - forgenn
 
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/neuralforge.git
-cd neuralforge
+git clone https://github.com/Cobkgukgg/forgenn.git
+cd forgenn
 pip install -r requirements.txt
 ```
 
@@ -13,7 +13,7 @@ pip install -r requirements.txt
 ### 1. Simple Classification
 
 ```python
-from neuralforge import NeuralNetwork, Dense, TrainingConfig
+from forgenn import NeuralNetwork, Dense, TrainingConfig
 import numpy as np
 
 # Generate data
@@ -36,7 +36,7 @@ predictions = model.predict(X[:5])
 ### 2. Use Pre-built Architecture
 
 ```python
-from neuralforge import Architectures
+from forgenn import Architectures
 
 # ResNet
 model = Architectures.resnet(
@@ -53,7 +53,7 @@ model.fit(X_train, y_train)
 ### 3. Advanced Configuration
 
 ```python
-from neuralforge import TrainingConfig
+from forgenn import TrainingConfig
 
 config = TrainingConfig(
     learning_rate=0.001,

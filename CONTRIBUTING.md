@@ -1,73 +1,45 @@
 # Contributing
 
-Thanks for wanting to contribute! Here's the deal:
+Thanks for checking this out!
 
-## Found a bug?
+## How to help
 
-Just open an issue. Include:
-- What you were trying to do
-- What happened instead  
-- Code to reproduce it
-- Your Python version
+- Fix bugs
+- Add features
+- Improve docs
+- Report issues
 
-## Want to add something?
+## Getting set up
 
-Cool. Here's the process:
+```bash
+git clone https://github.com/Cobkgukgg/forgenn.git
+cd forgenn
+pip install -e ".[dev]"
+```
+
+## Making changes
 
 1. Fork it
-2. Make a branch: `git checkout -b feature/cool-thing`
-3. Do your thing
-4. Add tests if needed
-5. Make sure existing tests pass: `python tests/test_neuralforge.py`
-6. Push it: `git push origin feature/cool-thing`
-7. Open a PR
+2. Make a branch: `git checkout -b fix-thing`
+3. Make your changes
+4. Test: `python tests/test_forgenn.py`
+5. Commit: `git commit -m "Fix thing"`
+6. Push and open a PR
 
 ## Code style
 
-Keep it clean:
 - Follow PEP 8 (mostly)
-- Add docstrings to public stuff
-- Use type hints where it makes sense
-- Keep lines under 100 chars
-- Meaningful variable names (no `x1`, `x2`, `temp`)
+- Add docstrings for public stuff
+- Keep it readable - that's the whole point
 
-Example:
-```python
-def forward(self, input_data: np.ndarray, training: bool = True) -> np.ndarray:
-    """
-    Forward pass through the layer.
-    
-    Args:
-        input_data: Input tensor
-        training: Whether in training mode
-        
-    Returns:
-        Output after forward pass
-    """
-    pass
-```
+## Pull requests
 
-## Commit messages
+- Update docs if needed
+- Add tests for new features
+- Make sure tests pass
 
-- Use present tense: "Add feature" not "Added feature"
-- First line under 72 chars
-- Reference issues if relevant
+That's it. Keep it simple.
 
-## What needs work
+## License
 
-Looking for help with:
-
-- [ ] GPU support (CuPy integration)
-- [ ] Batch normalization  
-- [ ] LSTM/GRU layers
-- [ ] Better conv layers
-- [ ] Visualization tools
-- [ ] More examples
-- [ ] Performance optimizations
-- [ ] Documentation improvements
-
-## Questions?
-
-Just open an issue.
-
-Thanks!
+MIT - your contributions will be too.
