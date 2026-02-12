@@ -1,5 +1,5 @@
 """
-NeuralForge - Neural Network Framework
+ForgeNN - Neural Network Framework
 
 Built this to actually understand how modern architectures work.
 No black boxes, just NumPy and math.
